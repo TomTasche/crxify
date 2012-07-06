@@ -1,0 +1,19 @@
+<html>
+	<head>
+		<title>crxify</title>
+	</head>
+	
+	<body>
+		<form name="input" action="pack" method="get">
+			Zipball URL: <input type="text" name="url" value="https://github.com/TomTasche/Announcify.js/zipball/master" />
+			<input type="submit" value="Pack it!" />
+		</form>
+		
+		Restrictions / Requirements:
+		<ul>
+			<li>You have to provide an URL pointing to a .zip</li>
+			<li>The root of the archive has to be a directory, which contains your manifest.json</li>
+			<li>for example: announcify.zip/somefolder/manifest.json</li>
+		</ul>
+	</body>
+</html>

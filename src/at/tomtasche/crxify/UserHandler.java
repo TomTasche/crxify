@@ -2,6 +2,8 @@ package at.tomtasche.crxify;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.UUID;
 
 import javax.servlet.ServletException;
@@ -10,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.DefaultHandler;
-import org.eclipse.jetty.util.resource.Resource;
 
 public class UserHandler extends DefaultHandler {
 
@@ -21,11 +22,7 @@ public class UserHandler extends DefaultHandler {
 		if (!request.getMethod().equals("GET") || request.getRequestURI().endsWith(".crx")) return;
 
 		if (!request.getRequestURI().endsWith("pack") || !request.getParameterMap().containsKey("url")) {
-			Resource resource = Resource.newResource(new File("index.html"));
-			
-			resource.writeTo(response.getOutputStream(), 0, resource.length());
-			
-			response.flushBuffer();
+			serveHtml("index.html", response);
 		} else {
 			String url = request.getParameter("url");
 			String id = UUID.randomUUID().toString();
@@ -61,11 +58,8 @@ public class UserHandler extends DefaultHandler {
 
 				file = new File(id);
 				deleteDir(file);
-				
-				response.getWriter().write(
-						"<html><body><a href=\"" + id + ".crx" + "\">Download .crx</a> and go to chrome://extensions in order to install it</body></html>"
-					);
-				response.getWriter().flush();
+
+				serveHtml("download.html", response);
 
 				//			response.sendRedirect(id + ".crx");
 			} catch (IOException e) {
@@ -76,22 +70,36 @@ public class UserHandler extends DefaultHandler {
 		}
 	}
 	
+	// taken from: http://www.javapractices.com/topic/TopicAction.do?Id=232
+	public static void serveHtml(String file, HttpServletResponse response) throws IOException {
+		InputStream input = UserHandler.class.getResourceAsStream("index.html");
+		OutputStream output = response.getOutputStream();
+
+		byte[] buffer = new byte[2048];
+		int bytesRead;    
+		while ((bytesRead = input.read(buffer)) != -1) {
+			output.write(buffer, 0, bytesRead);
+		}
+		
+		output.flush();
+	}
+
 	// taken from: http://www.exampledepot.com/egs/java.io/DeleteDir.html
 	// Deletes all files and subdirectories under dir.
 	// Returns true if all deletions were successful.
 	// If a deletion fails, the method stops attempting to delete and returns false.
 	public static boolean deleteDir(File dir) {
-	    if (dir.isDirectory()) {
-	        String[] children = dir.list();
-	        for (int i=0; i<children.length; i++) {
-	            boolean success = deleteDir(new File(dir, children[i]));
-	            if (!success) {
-	                return false;
-	            }
-	        }
-	    }
+		if (dir.isDirectory()) {
+			String[] children = dir.list();
+			for (int i=0; i<children.length; i++) {
+				boolean success = deleteDir(new File(dir, children[i]));
+				if (!success) {
+					return false;
+				}
+			}
+		}
 
-	    // The directory is now empty so delete it
-	    return dir.delete();
+		// The directory is now empty so delete it
+		return dir.delete();
 	}
 }
