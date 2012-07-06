@@ -1,47 +1,25 @@
 package at.tomtasche.crxify;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.UUID;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.HandlerList;
 
 public class Crxifier {
 
 	public static void main(String[] args) {
-		String url = "https://github.com/TomTasche/Announcify.js/zipball/master";
-		String id = UUID.randomUUID().toString();
+		Server server = new Server(8080);
 		
-		try {
-			Process process = Runtime.getRuntime().exec("wget -O " + id + ".zip " + url);
-			
-			File file = new File(id);
-			file.mkdir();
-			
-			try {
-				process.waitFor();
-			} catch (InterruptedException e) {}
-			
-			process = Runtime.getRuntime().exec("unzip " + id + ".zip -d " + id);
-			
-			try {
-				process.waitFor();
-			} catch (InterruptedException e) {}
-			
-			file = new File(id + ".zip");
-			file.delete();
-			
-			file = new File(id);
-			
-			process = Runtime.getRuntime().exec("./crxi " + file.listFiles()[0] + " pem.pem " + id);
-			
-			try {
-				process.waitFor();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			
-			file = new File(id);
-			file.delete();
-		} catch (IOException e) {
+		Handler fileHandler = new FileHandler();
+        Handler userHandler = new UserHandler();
+        
+        HandlerList handlers = new HandlerList();
+        handlers.setHandlers(new Handler[] { fileHandler, userHandler });
+        server.setHandler(handlers);
+        
+        try {
+			server.start();
+			server.join();
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
