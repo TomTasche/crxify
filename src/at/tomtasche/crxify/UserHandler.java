@@ -1,8 +1,10 @@
 package at.tomtasche.crxify;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.UUID;
 
@@ -48,7 +50,7 @@ public class UserHandler extends DefaultHandler {
 
 				file = new File(id);
 
-				process = Runtime.getRuntime().exec("libs/crxi " + file.listFiles()[0] + " pem.pem " + id);
+				process = Runtime.getRuntime().exec("./crxi " + file.listFiles()[0] + " pem.pem " + id);
 
 				try {
 					process.waitFor();
@@ -59,8 +61,11 @@ public class UserHandler extends DefaultHandler {
 				file = new File(id);
 				deleteDir(file);
 
-				serveHtml("download.html", response);
-
+				String html = getHtml("download.html").replace("{id}", id);
+				
+				response.getWriter().write(html);
+				response.getWriter().flush();
+				
 				//			response.sendRedirect(id + ".crx");
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -72,7 +77,7 @@ public class UserHandler extends DefaultHandler {
 	
 	// taken from: http://www.javapractices.com/topic/TopicAction.do?Id=232
 	public static void serveHtml(String file, HttpServletResponse response) throws IOException {
-		InputStream input = UserHandler.class.getResourceAsStream("index.html");
+		InputStream input = UserHandler.class.getResourceAsStream(file);
 		OutputStream output = response.getOutputStream();
 
 		byte[] buffer = new byte[2048];
@@ -82,6 +87,18 @@ public class UserHandler extends DefaultHandler {
 		}
 		
 		output.flush();
+	}
+	
+	public static String getHtml(String file) throws IOException {
+		InputStreamReader reader = new InputStreamReader(UserHandler.class.getResourceAsStream(file));
+		BufferedReader bufferedReader = new BufferedReader(reader);
+		
+		StringBuilder builder = new StringBuilder();
+		for (String s = bufferedReader.readLine(); s != null; s = bufferedReader.readLine()) {
+			builder.append(s);
+		}
+		
+		return builder.toString();
 	}
 
 	// taken from: http://www.exampledepot.com/egs/java.io/DeleteDir.html
