@@ -31,6 +31,12 @@ public class UserHandler extends DefaultHandler {
 
 			try {
 				Process process = Runtime.getRuntime().exec("wget -O " + id + ".zip " + url);
+				System.out.println("wget");
+				InputStreamReader reader = new InputStreamReader(process.getErrorStream());
+				BufferedReader bufferedReader = new BufferedReader(reader);
+				for (String s = bufferedReader.readLine(); s != null; s = bufferedReader.readLine()) {
+					System.out.println(s);
+				}
 
 				File file = new File(id);
 				file.mkdir();
@@ -40,6 +46,12 @@ public class UserHandler extends DefaultHandler {
 				} catch (InterruptedException e) {}
 
 				process = Runtime.getRuntime().exec("unzip " + id + ".zip -d " + id);
+				System.out.println("unzip");
+				reader = new InputStreamReader(process.getErrorStream());
+				bufferedReader = new BufferedReader(reader);
+				for (String s = bufferedReader.readLine(); s != null; s = bufferedReader.readLine()) {
+					System.out.println(s);
+				}
 
 				try {
 					process.waitFor();
@@ -51,7 +63,13 @@ public class UserHandler extends DefaultHandler {
 				file = new File(id);
 
 				process = Runtime.getRuntime().exec("./crxi " + file.listFiles()[0] + " pem.pem " + id);
-
+				System.out.println("crxi");
+				reader = new InputStreamReader(process.getErrorStream());
+				bufferedReader = new BufferedReader(reader);
+				for (String s = bufferedReader.readLine(); s != null; s = bufferedReader.readLine()) {
+					System.out.println(s);
+				}
+				
 				try {
 					process.waitFor();
 				} catch (InterruptedException e) {
@@ -65,8 +83,6 @@ public class UserHandler extends DefaultHandler {
 				
 				response.getWriter().write(html);
 				response.getWriter().flush();
-				
-				//			response.sendRedirect(id + ".crx");
 			} catch (IOException e) {
 				e.printStackTrace();
 

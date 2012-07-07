@@ -7,7 +7,7 @@ import org.eclipse.jetty.server.handler.HandlerList;
 public class Crxifier {
 
 	public static void main(String[] args) {
-		int port = System.getenv("PORT") != null ? Integer.valueOf(System.getenv("PORT")) : 8080;
+		int port = System.getenv("PORT") != null ? Integer.valueOf(System.getenv("PORT")) : 80;
 		
 		Server server = new Server(port);
 		
