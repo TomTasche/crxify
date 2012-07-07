@@ -28,20 +28,24 @@
     <div id="content-wrapper">
       <div class="inner clearfix">
         <section id="main-content">
-          <p>Say you're on a Chromebook, developing the next blockbuster Chrome Extension. There's no way to write extensions locally, so you're probably using <a href="c9.io">c9.io</a>. But how do you test it? Using crxify, of course!</p>
+<p>Say you're on a Chromebook, developing the next blockbuster Chrome Extension. There's no way to write extensions locally, so you're probably using <a href="c9.io">c9.io</a>. But how do you test it? Using crxify, of course!</p>
 
 <h2>Shut up and pack!</h2>
+<form name="input" action="http://23.23.138.208/pack" method="get">
+  Zipball URL: <input type="text" name="url" value="https://github.com/TomTasche/Announcify.js/zipball/master" size="50" />
+  <input type="submit" value="Pack it!" />
+</form>
 
 <h3>Restrictions / Requirements:</h3>
-
 <ul>
 <li>You have to provide an URL pointing to a .zip</li>
 <li>The root of the archive has to be a directory, which contains your manifest.json</li>
 <li>for example: announcify.zip/somefolder/manifest.json</li>
 <li>
 <strong>Give me a few seconds</strong> (or minutes, depending on the size of your repository)</li>
-</ul><h3>Questions?</h3>
+</ul>
 
+<h3>Questions?</h3>
 <p><a href="https://plus.google.com/108466870039650470305">Ping me</a>!</p>
         </section>
 
